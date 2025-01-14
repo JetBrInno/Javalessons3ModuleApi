@@ -5,20 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import entities.Task;
-import helpers.ToDoHelper;
+import helpers.ToDoHelperApache;
 import java.io.IOException;
 import java.util.List;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -31,11 +23,11 @@ public class ToDoBusinessTests {
 
     private HttpClient httpClient;
 
-    private ToDoHelper toDoHelper;
+    private ToDoHelperApache toDoHelperApache;
 
     @BeforeEach
     public void setUp(){
-        toDoHelper = new ToDoHelper();
+        toDoHelperApache = new ToDoHelperApache();
 
         httpClient = HttpClientBuilder.create().build();
     }
@@ -44,9 +36,9 @@ public class ToDoBusinessTests {
     @DisplayName("Создание объекта")
     @Disabled("Тест падает из-за бага задача jira.com/BUG-12523532")
     public void createTask() throws IOException {
-        Task myTask = toDoHelper.createTask();
+        Task myTask = toDoHelperApache.createTask();
 
-        List<Task> tasks = toDoHelper.getTasks();
+        List<Task> tasks = toDoHelperApache.getTasks();
         for (Task task : tasks) {
             if (task.getId() == myTask.getId())
             {
@@ -60,11 +52,11 @@ public class ToDoBusinessTests {
     @DisplayName("Получение списка задач из 3 элементов")
     public void getTasksBodyValidTypes() throws IOException {
         // удалить все элементы
-        toDoHelper.createTask();
-        toDoHelper.createTask();
-        toDoHelper.createTask();
+        toDoHelperApache.createTask();
+        toDoHelperApache.createTask();
+        toDoHelperApache.createTask();
 
-        List<Task> tasks = toDoHelper.getTasks();
+        List<Task> tasks = toDoHelperApache.getTasks();
         assertEquals(3, tasks.size());
 
         System.out.println(tasks);

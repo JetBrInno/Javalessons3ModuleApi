@@ -6,16 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import entities.Task;
-import helpers.ToDoHelper;
+import helpers.ToDoHelperApache;
 import java.io.IOException;
 import java.util.List;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,11 +25,11 @@ public class ToDoContractTests {
 
     private HttpClient httpClient;
 
-    private ToDoHelper toDoHelper;
+    private ToDoHelperApache toDoHelperApache;
 
     @BeforeEach
     public void setUp(){
-        toDoHelper = new ToDoHelper();
+        toDoHelperApache = new ToDoHelperApache();
         httpClient = HttpClientBuilder.create().build();
     }
 
@@ -52,7 +48,7 @@ public class ToDoContractTests {
     @Test
     @DisplayName("Получение списка задач возвращает все поля валидных типов")
     public void getTasksBodyValidTypes() throws IOException {
-        toDoHelper.createTask();
+        toDoHelperApache.createTask();
 
         HttpGet httpGet = new HttpGet(URL);
         HttpResponse httpResponse = httpClient.execute(httpGet);
