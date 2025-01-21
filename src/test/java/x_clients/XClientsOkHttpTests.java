@@ -26,7 +26,7 @@ public class XClientsOkHttpTests {
     @Test
     @DisplayName("Получить список компаний")
     public void getCompanyList() throws IOException {
-        String token; // ВЗЯТЬ ТОКЕН ИЗ POST АВТОРИЗАЦИИ
+        String token = ""; // ВЗЯТЬ ТОКЕН ИЗ POST АВТОРИЗАЦИИ
         Request request = new Request.Builder().url(URL + "company").addHeader("x-client-token", token).get().build();
         Response response = httpClient.newCall(request).execute();
 
