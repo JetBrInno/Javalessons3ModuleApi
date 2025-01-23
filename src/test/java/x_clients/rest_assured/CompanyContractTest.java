@@ -1,24 +1,35 @@
 package x_clients.rest_assured;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
-import io.restassured.response.Response;
-import io.restassured.response.ValidatableResponse;
-import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import x_clients.rest_assured.entity.CreateCompanyRequest;
+import x_clients.rest_assured.entity.CreateCompanyResponse;
+import x_clients.rest_assured.helpers.ApiCompanyHelper;
+import x_clients.rest_assured.helpers.AuthHelper;
 
 public class CompanyContractTest {
 
     private final static String URL = "https://x-clients-be.onrender.com/";
 
+    private static ApiCompanyHelper apiCompanyHelper;
+
+    private static AuthHelper authHelper;
+
     @BeforeAll
     public static void setUp() {
         RestAssured.baseURI = URL;
+        apiCompanyHelper = new ApiCompanyHelper();
+        authHelper = new AuthHelper();
+        String userToken = authHelper.authAndGetToken("leonardo", "leads");
+        RestAssured.requestSpecification = new RequestSpecBuilder().build().header("x-client-token", userToken);
     }
 
     // given
@@ -27,7 +38,7 @@ public class CompanyContractTest {
     @Test
     @DisplayName("Код ответа при получении списка компаний")
     public void getCompanyList() {
-        given()  // ДАНО:
+        given().log().all()  // ДАНО:
             .basePath("company")
             .when()     // КОГДА
             .get() // ШЛЕШЬ ГЕТ ЗАПРОС
@@ -46,43 +57,46 @@ public class CompanyContractTest {
     @Test
     @DisplayName("Создание компании")
     public void createCompany() {
-        String userToken = authAndGetToken();
+        CreateCompanyResponse createCompanyResponse = apiCompanyHelper.createCompany();
 
-        String jsonBodyToSend = """
-            {
-              "name": "RestAssuredCompany",
-              "description": "MyRestAssuredCompany"
-            }
-            """;
-        String id = given()  // ДАНО:
+        System.out.println(createCompanyResponse.id());
+    }
+
+    @Test
+    @DisplayName("Удаление компании")
+    public void deleteCompany() {
+        CreateCompanyResponse createCompanyResponse = apiCompanyHelper.createCompany();
+        int deletedObjectId = apiCompanyHelper.deleteCompany(createCompanyResponse.id());
+        assertEquals(createCompanyResponse.id(), deletedObjectId);
+    }
+
+    @Test
+    @Disabled("Разобразться с авторизацией")
+    @DisplayName("Создание компании выдает код 401 за клиента")
+    public void createCompanyWithClientUser() {
+        String userToken = authHelper.authAndGetToken("stella", "sun-fairy");
+        CreateCompanyRequest createCompanyRequest = new CreateCompanyRequest("Entity company", "with entity");
+
+        String errorMessage = given()  // ДАНО:
             .basePath("company")
-            .body(jsonBodyToSend)
+            .body(createCompanyRequest)
             .contentType(ContentType.JSON)
             .header("x-client-token", userToken)
             .when()     // КОГДА
             .post() // ШЛЕШЬ ПОСТ ЗАПРОС
             .then()
-            .statusCode(201)
-            .body("id", is(greaterThan(0)))
-            .extract().jsonPath().getString("id");
-
-        System.out.println(id);
+            .statusCode(403).extract().asPrettyString();
+        System.out.println(errorMessage);
     }
 
-    private String authAndGetToken() {
-        String jsonBodyToSend = """
-             {
-               "username": "leonardo",
-               "password": "leads"
-             }
-            """;
 
-        return given()  // ДАНО:
-            .basePath("auth/login")
-            .body(jsonBodyToSend)
-            .contentType(ContentType.JSON)
+    @Test
+    @DisplayName("Получить компанию по id")
+    public void getCompany() {
+        int id = 100;
+        given()  // ДАНО:
+            .basePath("company")
             .when()     // КОГДА
-            .post() // ШЛЕШЬ ПОСТ ЗАПРОС
-            .jsonPath().getString("userToken");
+            .get("{id}", id).prettyPrint(); // ШЛЕШЬ ГЕТ ЗАПРОС
     }
 }
