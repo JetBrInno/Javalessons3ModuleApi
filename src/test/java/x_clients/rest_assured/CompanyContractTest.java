@@ -5,7 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.http.ContentType;
+import io.restassured.specification.ResponseSpecification;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -98,5 +100,22 @@ public class CompanyContractTest {
             .basePath("company")
             .when()     // КОГДА
             .get("{id}", id).prettyPrint(); // ШЛЕШЬ ГЕТ ЗАПРОС
+    }
+
+    @Test
+    public void testSomething() {
+        ResponseSpecBuilder responseSpecBuilder = new ResponseSpecBuilder();
+        ResponseSpecification responseSpecification = responseSpecBuilder
+            .expectStatusCode(200)
+            .expectHeader("Content-Type", "application/json; charset=utf-8")
+            .build();
+
+        int id = 542;
+        given()  // ДАНО:
+            .basePath("company")
+            .when()
+            .get("{id}", id)
+            .then()
+            .spec(responseSpecification);
     }
 }
