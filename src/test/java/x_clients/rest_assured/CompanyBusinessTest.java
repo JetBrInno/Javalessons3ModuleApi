@@ -6,15 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.http.ContentType;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import x_clients.rest_assured.entity.Company;
-import x_clients.rest_assured.entity.CreateCompanyRequest;
 import x_clients.rest_assured.entity.CreateCompanyResponse;
 import x_clients.rest_assured.ext.ApiCompanyHelperResolver;
 import x_clients.rest_assured.ext.CreateCompanyResponseResolver;
@@ -22,7 +18,7 @@ import x_clients.rest_assured.helpers.ApiCompanyHelper;
 import x_clients.rest_assured.helpers.AuthHelper;
 
 @ExtendWith({CreateCompanyResponseResolver.class, ApiCompanyHelperResolver.class})
-public class BusinessContractTest {
+public class CompanyBusinessTest {
 
     private final static String URL = "https://x-clients-be.onrender.com/";
 
