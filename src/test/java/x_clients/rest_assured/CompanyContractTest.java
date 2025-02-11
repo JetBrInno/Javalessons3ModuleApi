@@ -59,7 +59,10 @@ public class CompanyContractTest {
     @Test
     @DisplayName("Создание компании")
     public void createCompany() {
-        CreateCompanyResponse createCompanyResponse = apiCompanyHelper.createCompany();
+        CreateCompanyResponse createCompanyResponse = apiCompanyHelper.createCompany(
+            "Entity company",
+            "desc with entity"
+        );
 
         System.out.println(createCompanyResponse.id());
     }
@@ -67,7 +70,10 @@ public class CompanyContractTest {
     @Test
     @DisplayName("Удаление компании")
     public void deleteCompany() {
-        CreateCompanyResponse createCompanyResponse = apiCompanyHelper.createCompany();
+        CreateCompanyResponse createCompanyResponse = apiCompanyHelper.createCompany(
+            "Entity company",
+            "desc with entity"
+        );
         int deletedObjectId = apiCompanyHelper.deleteCompany(createCompanyResponse.id());
         assertEquals(createCompanyResponse.id(), deletedObjectId);
     }

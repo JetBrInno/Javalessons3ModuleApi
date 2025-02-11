@@ -20,8 +20,8 @@ public class ApiCompanyHelper {
         authHelper = new AuthHelper();
     }
 
-    public CreateCompanyResponse createCompany() {
-        CreateCompanyRequest createCompanyRequest = new CreateCompanyRequest("Entity company", "with entity");
+    public CreateCompanyResponse createCompany(String name, String description) {
+        CreateCompanyRequest createCompanyRequest = new CreateCompanyRequest(name, description);
 
         return given()  // ДАНО:
             .basePath("company")
