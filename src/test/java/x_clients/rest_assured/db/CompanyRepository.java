@@ -1,7 +1,5 @@
 package x_clients.rest_assured.db;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import x_clients.rest_assured.entity.CompanyDB;
 

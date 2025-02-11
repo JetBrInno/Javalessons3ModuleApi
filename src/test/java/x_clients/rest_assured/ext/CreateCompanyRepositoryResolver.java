@@ -1,8 +1,10 @@
 package x_clients.rest_assured.ext;
 
+import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -15,9 +17,6 @@ import x_clients.rest_assured.db.CompanyRepositoryJDBC;
 public class CreateCompanyRepositoryResolver implements ParameterResolver, BeforeAllCallback, AfterAllCallback {
 
     private Connection connection;
-    private static final String connectionString = "jdbc:postgresql://dpg-cu3n5bt2ng1s73cbrv80-a.frankfurt-postgres.render.com/x_clients_db_heq8";
-    private static final String login = "x_clients_client";
-    private static final String password = "B9KBls6DlHN7shcDKUcGuFWvZoQYBjU4";
 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
@@ -40,10 +39,15 @@ public class CreateCompanyRepositoryResolver implements ParameterResolver, Befor
 
     @Override
     public void beforeAll(ExtensionContext extensionContext) throws Exception {
-        try {
-            connection = DriverManager.getConnection(connectionString, login, password);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+        String appConfigPath = rootPath + "env.properties";
+        Properties properties = new Properties();
+        properties.load(new FileInputStream(appConfigPath));
+
+        String connectionString = properties.getProperty("db.connectionString");
+        String login = properties.getProperty("db.login");;
+        String password = properties.getProperty("db.password");;
+
+        connection = DriverManager.getConnection(connectionString, login, password);
     }
 }
